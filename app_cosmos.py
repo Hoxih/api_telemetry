@@ -4,12 +4,17 @@ import os
 
 app = Flask(__name__)
 
-# Variables de entorno o reemplaza directamente aquí
-COSMOS_ENDPOINT = os.getenv("https://esp32.documents.azure.com:443/")
-COSMOS_KEY = os.getenv("QmWUYkAPMyuk7q61dJyfOLK7X1t30dTel36xXfFRFeRDwwJwFJbC20KqRFBKA7fi9MbZWMJqgFmFACDbDlnSIg==")
+# Lee las variables de entorno
+COSMOS_ENDPOINT = os.getenv("COSMOS_URL")
+COSMOS_KEY = os.getenv("COSMOS_KEY")
 DATABASE_NAME = "telemetria"
 CONTAINER_NAME = "datos"
 
+# Validar si están definidas
+if not COSMOS_ENDPOINT or not COSMOS_KEY:
+    raise Exception("❌ Faltan variables de entorno: COSMOS_URL o COSMOS_KEY")
+
+# Cliente de Cosmos DB
 client = CosmosClient(COSMOS_ENDPOINT, credential=COSMOS_KEY)
 db = client.get_database_client(DATABASE_NAME)
 container = db.get_container_client(CONTAINER_NAME)
